@@ -1,0 +1,11 @@
+todo
+    compare timeouts with Seo's debounce
+
+
+
+
+
+LATER
+    auto-off (after say 4 dead notes)
+    multi-note expressions
+    timing minimums
