@@ -1,7 +1,10 @@
 import React from 'react'
-import './App.css'
 import Tone from "tone"
 import ReactTimeout from 'react-timeout'
+
+import './reset.css'
+import './global.css'
+import './App.css'
 
 
 class App extends React.Component {
@@ -12,66 +15,130 @@ class App extends React.Component {
     this.responder = new Tone.Synth().toMaster()
 
     this.state = {
-      noteCallWait: 5000,
+      appStarted: false,
+      noteCallWait: 4000,
       // maxNoteCallWait: 5000,
+      calledNote: 'C3',
       noteCalledTime: null,
-      // responseReceivedTime: null,
       callerTimeout: null,
-      matchCounts: {
-        cd: { miss: 0, hit: 0 },
-      },
-      playerLevel: 0,
+      responseNote: null,
+      // responseReceivedTime: null,
+      matchCounts: [
+        { miss: 0, hit: 0 },
+        { miss: 0, hit: 0 },
+        { miss: 0, hit: 0 },
+      ],
+      playerLevel: 2,
       levelStaging: [
-        'cd', 'cde', 'cdef', 'cdefg', 'cdefga', 'cdefgab', 'cdefgabc'
+        ['C3'], ['C3','D3'], ['C3','D3','E3'], ['C3','D3','E3','F3'], ['C3','D3','E3','F3','G3'], 'cdefga', 'cdefgab', 'cdefgabc'
       ],
       showCalled: false,  // for "training wheels"
     }
   }
 
+  pickCallNote() {
+    const notes = this.state.levelStaging[this.state.playerLevel-1]
+    const pick = notes[Math.floor(Math.random()*notes.length)]
+    console.log('pick', pick)
+    return pick
+  }
+
   startApp = () => {
-    const { noteCallWait, callerTimeout } = this.state
+    const { calledNote, noteCallWait, callerTimeout } = this.state
     const { setTimeout, clearTimeout } = this.props
     console.log('starting app')
     clearTimeout(callerTimeout)
     this.setState({
+      appStarted: true,
       noteCalledTime: Date.now(),
       callerTimeout: setTimeout(this.startApp, noteCallWait)
-    }, () => console.log('timeout', this.state.callerTimeout))
-    this.caller.triggerAttackRelease('C4', '8n')
+    }, () => {
+      console.log('timeout', this.state.callerTimeout)
+      this.caller.triggerAttackRelease(calledNote, '8n')
+    })
   }
 
-  response = () => {
-    const { noteCalledTime, callerTimeout } = this.state
+  response = (note) => {
+    const { calledNote, noteCalledTime, callerTimeout, matchCounts, playerLevel } = this.state
     const { setTimeout } = this.props;
+
+    this.responder.triggerAttackRelease(note, '8n')
     const responseInterval = Date.now() - noteCalledTime
     clearTimeout(callerTimeout)
-    this.setState({
-      responseReceivedTime: Date.now(),
-      callerTimeout: setTimeout(this.startApp, responseInterval)
-    }, () => console.log('response timeout', this.state.callerTimeout))
-    this.responder.triggerAttackRelease('C4', '8n')
+    if (this.state.appStarted) {
+      const currentMatchCount = matchCounts[playerLevel-1]
+      const newMatchCount = { ...currentMatchCount }
+      let newCalledNote
+      if (note === calledNote) {
+        newMatchCount.hit = currentMatchCount.hit + 1
+        newCalledNote = this.pickCallNote()
+      } else {
+        newMatchCount.miss = currentMatchCount.miss + 1
+        newCalledNote = calledNote
+      }
+      const newMatchCounts = [ ...matchCounts ]
+      newMatchCount[playerLevel-1] = newMatchCount
+      this.setState({
+        responseNote: note,
+        calledNote: newCalledNote,
+        responseReceivedTime: Date.now(),
+        callerTimeout: setTimeout(this.startApp, responseInterval),
+        matchCounts: newMatchCounts
+      }, () => console.log('response timeout', this.state.callerTimeout))
+    }
+  }
+
+  renderNoteDisplay() {
+    const notes = this.state.levelStaging[this.state.playerLevel-1]
+    const noteDisplay = notes.map((note, index) => {
+      return (
+        <div
+          key={note}
+          style={{
+            width: '100px', height: '100px',
+            background: 'blue',
+            color: 'white',
+            margin: '10px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            display: 'flex', justifyContent: 'center', alignItems: 'center'
+          }}
+          onClick={() => this.response(note)}
+        >
+          <h1>{note}</h1>
+        </div>
+      )
+    })
+    return noteDisplay
   }
 
   render() {
+    const { matchCounts, playerLevel } = this.state
+    const currentMatchCount = matchCounts[playerLevel-1]
     return (
       <div className="app">
 
         <header className="app-header">
+          <div>
+            Match: {currentMatchCount.hit}
+            Miss: {currentMatchCount.miss}
+          </div>
           <div
-            style={{ width: '100px', height: '100px', background: 'blue', color: 'white' }}
+            style={{
+              width: '200px', height: '75px',
+              background: 'green', color: 'white',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              display: 'flex', justifyContent: 'center', alignItems: 'center'
+            }}
             onClick={this.startApp}
           >
-            Start
+            <h2>Start</h2>
           </div>
         </header>
 
-        <div>
-          <div
-            style={{ width: '100px', height: '100px', background: 'green', color: 'white' }}
-            onClick={() => this.response('C')}
-          >
-            A Note
-          </div>
+        <div className="note-row">
+          {this.renderNoteDisplay()}
         </div>
       </div>
     )
