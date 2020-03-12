@@ -18,6 +18,13 @@ body {
   color: white;
 }
 
+.match-count, .miss-count {
+  background: grey;
+  padding: 5px;
+  margin: 0 10px;
+  border-radius: 5px;
+}
+
 .note-row {
   display: flex;
   justify-content: center;

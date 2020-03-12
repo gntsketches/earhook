@@ -24,11 +24,11 @@ class App extends React.Component {
       responseNote: null,
       // responseReceivedTime: null,
       matchCounts: [
-        { miss: 0, hit: 0 },
-        { miss: 0, hit: 0 },
-        { miss: 0, hit: 0 },
+        { miss: 0, match: 0 },
+        { miss: 1, match: 2 },
+        { miss: 1, match: 3 },
       ],
-      playerLevel: 2,
+      playerLevel: 3,
       levelStaging: [
         ['C3'], ['C3','D3'], ['C3','D3','E3'], ['C3','D3','E3','F3'], ['C3','D3','E3','F3','G3'], 'cdefga', 'cdefgab', 'cdefgabc'
       ],
@@ -46,14 +46,14 @@ class App extends React.Component {
   startApp = () => {
     const { calledNote, noteCallWait, callerTimeout } = this.state
     const { setTimeout, clearTimeout } = this.props
-    console.log('starting app')
+    // console.log('starting app')
     clearTimeout(callerTimeout)
     this.setState({
       appStarted: true,
       noteCalledTime: Date.now(),
       callerTimeout: setTimeout(this.startApp, noteCallWait)
     }, () => {
-      console.log('timeout', this.state.callerTimeout)
+      // console.log('timeout', this.state.callerTimeout)
       this.caller.triggerAttackRelease(calledNote, '8n')
     })
   }
@@ -70,21 +70,23 @@ class App extends React.Component {
       const newMatchCount = { ...currentMatchCount }
       let newCalledNote
       if (note === calledNote) {
-        newMatchCount.hit = currentMatchCount.hit + 1
+        newMatchCount.match = currentMatchCount.match + 1
         newCalledNote = this.pickCallNote()
       } else {
         newMatchCount.miss = currentMatchCount.miss + 1
         newCalledNote = calledNote
       }
       const newMatchCounts = [ ...matchCounts ]
-      newMatchCount[playerLevel-1] = newMatchCount
+      newMatchCounts[playerLevel-1] = newMatchCount
       this.setState({
         responseNote: note,
         calledNote: newCalledNote,
         responseReceivedTime: Date.now(),
         callerTimeout: setTimeout(this.startApp, responseInterval),
         matchCounts: newMatchCounts
-      }, () => console.log('response timeout', this.state.callerTimeout))
+      }, () => {
+        // console.log('response timeout', this.state.callerTimeout)
+      })
     }
   }
 
@@ -100,7 +102,7 @@ class App extends React.Component {
             color: 'white',
             margin: '10px',
             borderRadius: '5px',
-            cursor: 'pointer',
+            cursor: 'pointer', userSelect: 'none',
             display: 'flex', justifyContent: 'center', alignItems: 'center'
           }}
           onClick={() => this.response(note)}
@@ -119,21 +121,23 @@ class App extends React.Component {
       <div className="app">
 
         <header className="app-header">
-          <div>
-            Match: {currentMatchCount.hit}
-            Miss: {currentMatchCount.miss}
+          <div className="match-count">
+            Match: {currentMatchCount.match}
           </div>
           <div
             style={{
               width: '200px', height: '75px',
               background: 'green', color: 'white',
               borderRadius: '5px',
-              cursor: 'pointer',
+              cursor: 'pointer', userSelect: 'none',
               display: 'flex', justifyContent: 'center', alignItems: 'center'
             }}
             onClick={this.startApp}
           >
             <h2>Start</h2>
+          </div>
+          <div className="miss-count">
+            Miss: {currentMatchCount.miss}
           </div>
         </header>
 

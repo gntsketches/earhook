@@ -1,11 +1,34 @@
 todo
     compare timeouts with Seo's debounce
 
+todo next dev
+    review to abstract and tidy
+    key listeners
+    review renders
+    basic leveling system
 
 
+LEVEL TRACK UNLOCKS
+    Major   R ** M2 ** M3 ** P4 ** P5 ** M6 ** M7 ** 8v (Lydian & Myxolydian unlock at Major 8v)
+                                   Minor m6    m7    8v (Dorian & Phrygian unlock at Minor 8v)
+    ... this will have to come from experience
+        maybe find some music profs to discuss
 
 
-LATER
+FEATURES
+    splash for match & miss
     auto-off (after say 4 dead notes)
-    multi-note expressions
+    track timing average at level
+    mode-switching options
+    flash starting pitch
+        "training wheels" options
+            always play root first
+            flash every pitch (how to limit re:
+            (how to limit re: advancement and scoring?)
     timing minimums
+
+
+LATER ("Premium")
+    advanced scales beyond diatonic
+    scoop
+    multi-note expressions
