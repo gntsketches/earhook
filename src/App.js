@@ -18,7 +18,7 @@ class App extends React.Component {
       appStarted: false,
       noteCallWait: 4000,
       // maxNoteCallWait: 5000,
-      calledNote: 'C3',
+      calledNote: 'C4',
       noteCalledTime: null,
       callerTimeout: null,
       responseNote: null,
@@ -30,7 +30,7 @@ class App extends React.Component {
       ],
       playerLevel: 3,
       levelStaging: [
-        ['C3'], ['C3','D3'], ['C3','D3','E3'], ['C3','D3','E3','F3'], ['C3','D3','E3','F3','G3'], 'cdefga', 'cdefgab', 'cdefgabc'
+        ['C4'], ['C4','D4'], ['C4','D4','E4'], ['C3','D3','E3','F3'], ['C3','D3','E3','F3','G3'], 'cdefga', 'cdefgab', 'cdefgabc'
       ],
       showCalled: false,  // for "training wheels"
     }
@@ -43,22 +43,35 @@ class App extends React.Component {
     return pick
   }
 
-  startApp = () => {
-    const { calledNote, noteCallWait, callerTimeout } = this.state
-    const { setTimeout, clearTimeout } = this.props
-    // console.log('starting app')
-    clearTimeout(callerTimeout)
-    this.setState({
-      appStarted: true,
-      noteCalledTime: Date.now(),
-      callerTimeout: setTimeout(this.startApp, noteCallWait)
-    }, () => {
-      // console.log('timeout', this.state.callerTimeout)
-      this.caller.triggerAttackRelease(calledNote, '8n')
-    })
+  // split into: startApp, sendCall
+  startStop = () => {
+    const { appStarted } = this.state
+    console.log('starting app')
+    if (appStarted) {
+      this.setState({ appStarted: false })
+    } else {
+      this.setState({ appStarted: true }, () => { this.sendCall() })
+    }
   }
 
-  response = (note) => {
+  sendCall = () => {
+    const { appStarted, calledNote, noteCallWait, callerTimeout } = this.state
+    const { setTimeout, clearTimeout } = this.props
+
+    if (appStarted) {
+      clearTimeout(callerTimeout)
+      this.setState({
+        appStarted: true,
+        noteCalledTime: Date.now(),
+        callerTimeout: setTimeout(this.sendCall, noteCallWait)
+      }, () => {
+        // console.log('timeout', this.state.callerTimeout)
+        this.caller.triggerAttackRelease(calledNote, '8n')
+      })
+    }
+  }
+
+  sendResponse = (note) => {
     const { calledNote, noteCalledTime, callerTimeout, matchCounts, playerLevel } = this.state
     const { setTimeout } = this.props;
 
@@ -82,7 +95,7 @@ class App extends React.Component {
         responseNote: note,
         calledNote: newCalledNote,
         responseReceivedTime: Date.now(),
-        callerTimeout: setTimeout(this.startApp, responseInterval),
+        callerTimeout: setTimeout(this.sendCall, responseInterval),
         matchCounts: newMatchCounts
       }, () => {
         // console.log('response timeout', this.state.callerTimeout)
@@ -105,7 +118,7 @@ class App extends React.Component {
             cursor: 'pointer', userSelect: 'none',
             display: 'flex', justifyContent: 'center', alignItems: 'center'
           }}
-          onClick={() => this.response(note)}
+          onClick={() => this.sendResponse(note)}
         >
           <h1>{note}</h1>
         </div>
@@ -115,7 +128,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { matchCounts, playerLevel } = this.state
+    const { appStarted, matchCounts, playerLevel } = this.state
     const currentMatchCount = matchCounts[playerLevel-1]
     return (
       <div className="app">
@@ -132,9 +145,9 @@ class App extends React.Component {
               cursor: 'pointer', userSelect: 'none',
               display: 'flex', justifyContent: 'center', alignItems: 'center'
             }}
-            onClick={this.startApp}
+            onClick={this.startStop}
           >
-            <h2>Start</h2>
+            <h2>{ appStarted ? 'Stop' : 'Start' }</h2>
           </div>
           <div className="miss-count">
             Miss: {currentMatchCount.miss}
