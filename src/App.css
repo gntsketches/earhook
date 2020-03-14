@@ -1,5 +1,5 @@
 body {
-  background: #999;
+  background: orange;
 }
 
 .app {
@@ -8,10 +8,27 @@ body {
 
 .app-header {
   background-color: #282c34;
-  min-height: 100px;
+  height: 25vh;
   width: 100vw;
   display: flex;
-  /*flex-direction: row;*/
+  align-items: center;
+  justify-content: flex-start;
+  font-size: calc(10px + 2min);
+  color: white;
+}
+
+.scale-level {
+  padding: 10px;
+}
+
+
+/* START N SPLASH ***************************************/
+
+.start-n-splash {
+  background-color: #393d45;
+  height: 25vh;
+  width: 100vw;
+  display: flex;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -33,12 +50,37 @@ body {
   color: #000;
 }
 
-.note-row {
+.start-stop {
+  width: 150px; height: 50px;
+  background-color: darkolivegreen;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer; user-select: none;
+  display: flex;
+  justify-content: center; align-items: center
+}
+
+
+/* NOTE ZONE **************************************/
+
+.note-zone {
+  height: 50vh;
   display: flex;
   justify-content: center;
+  background-color: #4a4e56;
 }
 
 .notes {
   display: flex
+}
+
+.note {
+  width: 100px; height: 100px;
+  background: blue;
+  color: white;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer; user-select: none;
+  display: flex; justify-content: center; align-items: center;
 }
 

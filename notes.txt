@@ -1,29 +1,23 @@
 todo
     compare timeouts with Seo's debounce
 
-todo next dev
+todo goal for weekend: playable thing
     basic leveling system
-        need a getter for, like, currentScaleAndLevelMatchCount
-            and look over those variable names, yipe. need to refactor before going any further.
-            reduce file size
-                move styles to css
-                move levelTracking to it's own file
-        define scales in arrays and filter the number of elements per level
-        each scale tracks own level
-        advancement at: minMatchCount && match/missRatio
-            more sophisticated: steady tempo requirement, tempo minimums (how to do tempo averaging?)
-        scales shown but greyed out in the UI until unlocked
+        just get through major (and play it) a bunch before moving on to minor
+            because: need to define advancement rhythm, code, test this whole concept
+            advancement at: minMatchCount && match/missRatio
+    look over those variable names, yipe. need to refactor before going any further.
     key listeners
-    ? debounce to prevent multiple responses from messing up the timeouts
+
+    reduce file size
+        move levelTracking to it's own file
+        components for:
     review renders
 
+DEV QUESTIONS
+    store progress data with scale data?
 
 
-LEVEL TRACK UNLOCKS
-    Major   R ** M2 ** M3 ** P4 ** P5 ** M6 ** M7 ** 8v (Lydian & Myxolydian unlock at Major 8v)
-                                   Minor m6    m7    8v (Dorian & Phrygian unlock at Minor 8v)
-    ... this will have to come from experience
-        maybe find some music profs to discuss
 
 
 TUTORIAL / NOTIFICATIONS
@@ -40,7 +34,9 @@ TUTORIAL / NOTIFICATIONS
 
 FEATURES
     modal overlay for level advance (display unlocked, stats, etc.)
+    callNote repeat limit (not more than say 4 Cs in a row)
     auto-off (after say 4 dead notes)
+    more sophisticated leveling: steady tempo requirement, tempo minimums (how to do tempo averaging?)
     track timing average at level
     persistence
     mode-switching options
@@ -51,6 +47,21 @@ FEATURES
             flash every pitch (how to limit re:
             (how to limit re: advancement and scoring?)
     timing minimums
+
+
+            <select className="select-scale" onChange={() => {console.log('changing scale')}}>
+              <option>Major</option><option>Minor</option>
+            </select>
+            <select>
+              <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option>
+            </select>
+
+
+LEVEL TRACK UNLOCKS
+    Major   R ** M2 ** M3 ** P4 ** P5 ** M6 ** M7 ** 8v (Lydian & Myxolydian unlock at Major 8v)
+                                   Minor m6    m7    8v (Dorian & Phrygian unlock at Minor 8v)
+    ... this will have to come from experience
+        maybe find some music profs to discuss
 
 
 LATER ("Premium")

@@ -1,4 +1,4 @@
-import Tone from 'tone';
+// import Tone from 'tone';
 
-export const caller = new Tone.Synth();
-export const response = new Tone.Synth();
+// export const caller = new Tone.Synth();
+// export const response = new Tone.Synth();
