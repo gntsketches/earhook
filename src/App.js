@@ -23,6 +23,8 @@ class App extends React.Component {
       callerTimeout: null,
       responseNote: null,
       // responseReceivedTime: null,
+      matchStyle: false,
+      missStyle: false,
       matchCounts: [
         { miss: 0, match: 0 },
         { miss: 1, match: 2 },
@@ -46,7 +48,7 @@ class App extends React.Component {
   // split into: startApp, sendCall
   startStop = () => {
     const { appStarted } = this.state
-    console.log('starting app')
+
     if (appStarted) {
       this.setState({ appStarted: false })
     } else {
@@ -75,30 +77,42 @@ class App extends React.Component {
     const { calledNote, noteCalledTime, callerTimeout, matchCounts, playerLevel } = this.state
     const { setTimeout } = this.props;
 
-    this.responder.triggerAttackRelease(note, '8n')
-    const responseInterval = Date.now() - noteCalledTime
+    // play back your note
     clearTimeout(callerTimeout)
+    this.responder.triggerAttackRelease(note, '8n')
+
     if (this.state.appStarted) {
+
+      // test match and update level data
       const currentMatchCount = matchCounts[playerLevel-1]
       const newMatchCount = { ...currentMatchCount }
       let newCalledNote
+      let matchSplash = false
+      let missSplash = false
       if (note === calledNote) {
         newMatchCount.match = currentMatchCount.match + 1
         newCalledNote = this.pickCallNote()
+        matchSplash = true
       } else {
         newMatchCount.miss = currentMatchCount.miss + 1
         newCalledNote = calledNote
+        missSplash = true
       }
       const newMatchCounts = [ ...matchCounts ]
       newMatchCounts[playerLevel-1] = newMatchCount
+
+      //  set response timing
+      const responseInterval = Date.now() - noteCalledTime
+
       this.setState({
         responseNote: note,
         calledNote: newCalledNote,
+        matchStyle: matchSplash,
+        missStyle: missSplash,
         responseReceivedTime: Date.now(),
         callerTimeout: setTimeout(this.sendCall, responseInterval),
         matchCounts: newMatchCounts
-      }, () => {
-        // console.log('response timeout', this.state.callerTimeout)
+      }, () => { setTimeout(() => { this.setState({ matchStyle: false, missStyle: false }) }, 300)
       })
     }
   }
@@ -128,13 +142,14 @@ class App extends React.Component {
   }
 
   render() {
-    const { appStarted, matchCounts, playerLevel } = this.state
+    const { appStarted, matchCounts, matchStyle, missStyle, playerLevel } = this.state
+    console.log('matchStyle', matchStyle, 'missStyle', missStyle)
     const currentMatchCount = matchCounts[playerLevel-1]
     return (
       <div className="app">
 
         <header className="app-header">
-          <div className="match-count">
+          <div className={matchStyle ? 'match-count splash' : 'match-count'}>
             Match: {currentMatchCount.match}
           </div>
           <div
@@ -149,7 +164,7 @@ class App extends React.Component {
           >
             <h2>{ appStarted ? 'Stop' : 'Start' }</h2>
           </div>
-          <div className="miss-count">
+          <div className={missStyle ? 'miss-count splash' : 'miss-count'}>
             Miss: {currentMatchCount.miss}
           </div>
         </header>

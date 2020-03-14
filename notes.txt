@@ -2,8 +2,8 @@ todo
     compare timeouts with Seo's debounce
 
 todo next dev
-    review to abstract and tidy
     key listeners
+    ? debounce to prevent multiple responses from messing up the timeouts
     review renders
     basic leveling system
 
@@ -32,3 +32,6 @@ LATER ("Premium")
     advanced scales beyond diatonic
     scoop
     multi-note expressions
+    match/miss splash
+        different speed for apply/remove styles?
+        other sorts of animations? confetti?
