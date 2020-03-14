@@ -3,9 +3,15 @@ todo
 
 todo next dev
     key listeners
+    basic leveling system
+        define scales in arrays and filter the number of elements per level
+        each scale tracks own level
+        advancement at: minMatchCount && match/missRatio
+            more sophisticated: steady tempo requirement, tempo minimums (how to do tempo averaging?)
+        scales shown but greyed out in the UI until unlocked
     ? debounce to prevent multiple responses from messing up the timeouts
     review renders
-    basic leveling system
+
 
 
 LEVEL TRACK UNLOCKS
@@ -19,7 +25,9 @@ FEATURES
     splash for match & miss
     auto-off (after say 4 dead notes)
     track timing average at level
+    persistence
     mode-switching options
+    display BPM as goes (tempo averaging?)
     flash starting pitch
         "training wheels" options
             always play root first

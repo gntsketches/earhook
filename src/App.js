@@ -6,6 +6,7 @@ import './reset.css'
 import './global.css'
 import './App.css'
 
+import { scales } from "./constants"
 
 class App extends React.Component {
   constructor() {
@@ -27,19 +28,39 @@ class App extends React.Component {
       missStyle: false,
       matchCounts: [
         { miss: 0, match: 0 },
-        { miss: 1, match: 2 },
-        { miss: 1, match: 3 },
+        { miss: 0, match: 0 },
+        { miss: 0, match: 0 },
       ],
-      playerLevel: 3,
+      currentScale: 'major',
+      // currentLevel: 2,
       levelStaging: [
-        ['C4'], ['C4','D4'], ['C4','D4','E4'], ['C3','D3','E3','F3'], ['C3','D3','E3','F3','G3'], 'cdefga', 'cdefgab', 'cdefgabc'
+        ['C4'], ['C4','D4'], ['C4','D4','E4'], ['C3','D3','E3','F3'], ['C3','D3','E3','F3','G3'],
       ],
+      levelTracking: {
+        major: 2,
+        minor: 1,
+      },
+
       showCalled: false,  // for "training wheels"
     }
   }
 
+  get activeNotes() {
+    const { currentScale, levelTracking } = this.state
+    const currentScaleNotes = scales[currentScale]
+    const currentScaleLevel = levelTracking[currentScale]
+    return currentScaleNotes.filter((note, index) => index < currentScaleLevel)
+  }
+
+  get currentLevel() {
+    const { currentScale, levelTracking } = this.state
+    console.log('levelTracking[currentScale]', levelTracking[currentScale])
+    return levelTracking[currentScale]
+  }
+
   pickCallNote() {
-    const notes = this.state.levelStaging[this.state.playerLevel-1]
+    // const notes = this.state.levelStaging[this.state.currentLevel-1]
+    const notes = this.activeNotes
     const pick = notes[Math.floor(Math.random()*notes.length)]
     console.log('pick', pick)
     return pick
@@ -84,7 +105,8 @@ class App extends React.Component {
     if (this.state.appStarted) {
 
       // test match and update level data
-      const currentMatchCount = matchCounts[playerLevel-1]
+      const currentMatchCount = matchCounts[this.currentLevel]
+      console.log('currentMatchCount', currentMatchCount)
       const newMatchCount = { ...currentMatchCount }
       let newCalledNote
       let matchSplash = false
@@ -118,7 +140,7 @@ class App extends React.Component {
   }
 
   renderNoteDisplay() {
-    const notes = this.state.levelStaging[this.state.playerLevel-1]
+    const notes = this.activeNotes // this.state.levelStaging[this.state.playerLevel-1]
     const noteDisplay = notes.map((note, index) => {
       return (
         <div
@@ -143,8 +165,8 @@ class App extends React.Component {
 
   render() {
     const { appStarted, matchCounts, matchStyle, missStyle, playerLevel } = this.state
-    console.log('matchStyle', matchStyle, 'missStyle', missStyle)
-    const currentMatchCount = matchCounts[playerLevel-1]
+    // console.log('matchStyle', matchStyle, 'missStyle', missStyle)
+    const currentMatchCount = matchCounts[this.currentLevel]
     return (
       <div className="app">
 
