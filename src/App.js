@@ -18,55 +18,72 @@ class App extends React.Component {
     this.state = {
       appStarted: false,
       noteCallWait: 4000,
-      // maxNoteCallWait: 5000,
       calledNote: 'C4',
+      // showCalled: false,  // for "training wheels"
       noteCalledTime: null,
       callerTimeout: null,
       responseNote: null,
-      // responseReceivedTime: null,
       matchStyle: false,
       missStyle: false,
-      matchCounts: [
-        { miss: 0, match: 0 },
-        { miss: 0, match: 0 },
-        { miss: 0, match: 0 },
-      ],
+      // responseReceivedTime: null,
+      // maxNoteCallWait: 5000,
+
       currentScale: 'major',
-      // currentLevel: 2,
-      levelStaging: [
-        ['C4'], ['C4','D4'], ['C4','D4','E4'], ['C3','D3','E3','F3'], ['C3','D3','E3','F3','G3'],
-      ],
       levelTracking: {
-        major: 2,
-        minor: 1,
+        major: {
+          level: 2,
+          matchCounts: [
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+          ],
+        },
+        minor: {
+          level: 3,
+          matchCounts: [
+            null,
+            null,
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+          ],
+        },
       },
 
-      showCalled: false,  // for "training wheels"
     }
   }
 
+
+  // GETTERS
+  // _________________________________________________________________________________
   get activeNotes() {
     const { currentScale, levelTracking } = this.state
     const currentScaleNotes = scales[currentScale]
-    const currentScaleLevel = levelTracking[currentScale]
+    const currentScaleLevel = levelTracking[currentScale].level
     return currentScaleNotes.filter((note, index) => index < currentScaleLevel)
   }
 
   get currentLevel() {
     const { currentScale, levelTracking } = this.state
-    console.log('levelTracking[currentScale]', levelTracking[currentScale])
-    return levelTracking[currentScale]
+    // console.log('levelTracking[currentScale.level]', levelTracking[currentScale].level)
+    return levelTracking[currentScale].level
   }
 
+  get currentScaleMatchCounts() {
+    const { currentScale, levelTracking } = this.state
+    return levelTracking[currentScale].matchCounts
+  }
+
+
+  // UI
+  // _________________________________________________________________________________
   pickCallNote() {
-    // const notes = this.state.levelStaging[this.state.currentLevel-1]
     const notes = this.activeNotes
     const pick = notes[Math.floor(Math.random()*notes.length)]
-    console.log('pick', pick)
+    // console.log('pick', pick)
     return pick
   }
 
-  // split into: startApp, sendCall
   startStop = () => {
     const { appStarted } = this.state
 
@@ -95,7 +112,7 @@ class App extends React.Component {
   }
 
   sendResponse = (note) => {
-    const { calledNote, noteCalledTime, callerTimeout, matchCounts, playerLevel } = this.state
+    const { calledNote, noteCalledTime, callerTimeout, currentScale, levelTracking, playerLevel } = this.state
     const { setTimeout } = this.props;
 
     // play back your note
@@ -105,7 +122,7 @@ class App extends React.Component {
     if (this.state.appStarted) {
 
       // test match and update level data
-      const currentMatchCount = matchCounts[this.currentLevel]
+      const currentMatchCount = this.currentScaleMatchCounts[this.currentLevel]
       console.log('currentMatchCount', currentMatchCount)
       const newMatchCount = { ...currentMatchCount }
       let newCalledNote
@@ -120,8 +137,9 @@ class App extends React.Component {
         newCalledNote = calledNote
         missSplash = true
       }
-      const newMatchCounts = [ ...matchCounts ]
-      newMatchCounts[playerLevel-1] = newMatchCount
+      // const newMatchCounts = [ ...matchCounts ]
+      const newLevelTracking = { ...levelTracking }
+      newLevelTracking[currentScale].matchCounts[this.currentLevel] = newMatchCount
 
       //  set response timing
       const responseInterval = Date.now() - noteCalledTime
@@ -133,14 +151,17 @@ class App extends React.Component {
         missStyle: missSplash,
         responseReceivedTime: Date.now(),
         callerTimeout: setTimeout(this.sendCall, responseInterval),
-        matchCounts: newMatchCounts
+        matchCounts: newLevelTracking,
       }, () => { setTimeout(() => { this.setState({ matchStyle: false, missStyle: false }) }, 300)
       })
     }
   }
 
+
+  // RENDER
+  // _________________________________________________________________________________
   renderNoteDisplay() {
-    const notes = this.activeNotes // this.state.levelStaging[this.state.playerLevel-1]
+    const notes = this.activeNotes
     const noteDisplay = notes.map((note, index) => {
       return (
         <div
@@ -164,9 +185,11 @@ class App extends React.Component {
   }
 
   render() {
-    const { appStarted, matchCounts, matchStyle, missStyle, playerLevel } = this.state
+    const { appStarted, matchCounts, matchStyle, missStyle } = this.state
     // console.log('matchStyle', matchStyle, 'missStyle', missStyle)
-    const currentMatchCount = matchCounts[this.currentLevel]
+    console.log('currentScaleMatchCounts', this.currentScaleMatchCounts)
+    console.log('currentLevel', this.currentLevel)
+    const currentMatchCount = this.currentScaleMatchCounts[this.currentLevel]
     return (
       <div className="app">
 

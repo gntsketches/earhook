@@ -2,13 +2,18 @@ todo
     compare timeouts with Seo's debounce
 
 todo next dev
-    key listeners
     basic leveling system
+        need a getter for, like, currentScaleAndLevelMatchCount
+            and look over those variable names, yipe. need to refactor before going any further.
+            reduce file size
+                move styles to css
+                move levelTracking to it's own file
         define scales in arrays and filter the number of elements per level
         each scale tracks own level
         advancement at: minMatchCount && match/missRatio
             more sophisticated: steady tempo requirement, tempo minimums (how to do tempo averaging?)
         scales shown but greyed out in the UI until unlocked
+    key listeners
     ? debounce to prevent multiple responses from messing up the timeouts
     review renders
 
@@ -21,16 +26,28 @@ LEVEL TRACK UNLOCKS
         maybe find some music profs to discuss
 
 
+TUTORIAL / NOTIFICATIONS
+    (skip tutorial option)
+    One note start - flash the button.
+        Text indicates you to set the rhythm (test for rhythm?)
+    Two notes
+        First flash the buttons.
+        Once a few are done, remove flash and show match and miss
+            & Show 'training wheels' option
+            Text re: only track matches w/o training wheels
+    Unlock Minor 3rd
+
+
 FEATURES
-    splash for match & miss
+    modal overlay for level advance (display unlocked, stats, etc.)
     auto-off (after say 4 dead notes)
     track timing average at level
     persistence
     mode-switching options
     display BPM as goes (tempo averaging?)
     flash starting pitch
-        "training wheels" options
-            always play root first
+        "training wheels" option
+            always play root first; always flash first note
             flash every pitch (how to limit re:
             (how to limit re: advancement and scoring?)
     timing minimums
