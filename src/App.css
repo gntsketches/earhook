@@ -88,9 +88,13 @@ body {
   width: 100px; height: 100px;
   background: blue;
   color: white;
+  border: 2px solid #5b5f67;
   margin: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer; user-select: none;
   display: flex; justify-content: center; align-items: center;
 }
 
+.note.down {
+  border: 2px solid #7d7f89;
+}

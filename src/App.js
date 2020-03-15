@@ -29,15 +29,14 @@ class App extends React.Component {
       sameCallLimit: 2,
       newLevelNoteMatches: 0,
       newLevelNoteMatchesToNextLevel: 8,  // REALLY? That's what you're calling it?
-      // showCalled: false,  // for "training wheels"
       noteCalledTime: null,
       callerTimeout: null,
       responseNote: null,
       matchStyle: false,
       missStyle: false,
-      showAdvanceModal: false,
-      // responseReceivedTime: null,
-      // maxNoteCallWait: 5000,
+      pressed: [],
+      // showCalled: false,  // for "training wheels"
+      // showTutorialModal: false,
 
       currentScale: 'major',
       levelTracking: {
@@ -76,12 +75,17 @@ class App extends React.Component {
   // RENDER
   // ---------------------------------------------------------------------------------
   renderNoteDisplay() {
+    const { pressed } = this.state
+    console.log('render pressed', pressed)
     const notes = this.activeNotes
     const noteDisplay = notes.map((note, index) => {
       return (
-        <div className="note"
+        <div
+          className={pressed.includes(note) ? 'note down' : 'note'}
           key={note}
-          onClick={() => this.sendResponse(note)}
+          // onClick={() => this.sendResponse(note)}
+          onMouseDown={() => this.checkPressed(note, 'down')}
+          onMouseUp={() => this.checkPressed(note, 'up')}
         >
           <h1>{note}</h1>
         </div>
@@ -185,11 +189,26 @@ class App extends React.Component {
     }
   }
 
+  checkPressed = (note, downOrUp) => {
+    const { pressed } = this.state
+    console.log('checkPressed', pressed)
+    if (pressed.indexOf(note) === -1 && downOrUp === 'down') {
+      const newPressed = [ ...pressed, note]
+      this.setState({ pressed: newPressed}, () => this.sendResponse(note))
+    } else if (downOrUp === 'up') {
+      const newPressed = pressed.filter(n => n !== note)
+      this.setState({ pressed: newPressed })
+    }
+  }
+
   sendCall = () => {
+    console.log('sendCall')
     const {
       appStarted, callNote, noteCallWait, callCount, callCountLimit, callerTimeout
     } = this.state
     const { setTimeout, clearTimeout } = this.props
+
+    clearTimeout(callerTimeout)
 
     if (callCount >= callCountLimit) {
       this.startStop()
@@ -197,20 +216,20 @@ class App extends React.Component {
     }
 
     if (appStarted) {
-      clearTimeout(callerTimeout)
       this.setState({
         appStarted: true,
         callCount: callCount+1,
         noteCalledTime: Date.now(),
         callerTimeout: setTimeout(this.sendCall, noteCallWait)
       }, () => {
-        // console.log('timeout', this.state.callerTimeout)
+        console.log('timeout', this.state.callerTimeout)
         this.caller.triggerAttackRelease(callNote, '8n')
       })
     }
   }
 
   sendResponse = (note) => {
+    console.log('sendResponse', note)
     const { callNote, noteCalledTime, callerTimeout, currentScale, levelTracking, newLevelNoteMatches } = this.state
     const { setTimeout } = this.props;
 

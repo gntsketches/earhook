@@ -1,27 +1,26 @@
 import { keyToNote } from "./constants"
 
-let down = []
-// use of file scope, but cleaner than another call to setState
+let spacebarDown = false  // note use of file scope
 
 export function addListeners(scope) {
   document.addEventListener('keydown', function(e) {
-    // console.log('down', down)
-    if (down.indexOf(e.key) === -1) {
-      down.push(e.key)
-      if (e.key === ' ') {
+      if (e.key === ' ' && !spacebarDown) {
+        spacebarDown = true
         scope.startStop()
       }
       else if (e.key in keyToNote) {
-        scope.sendResponse(keyToNote[e.key])
+        scope.checkPressed(keyToNote[e.key], 'down')
       }
-    }
   })
 
   document.addEventListener('keyup', function(e) {
-      // console.log('down', down)
-    if (down.indexOf(e.key) > -1) {
-      down = down.filter(k => k !== e.key)
+    if (e.key === ' ' && spacebarDown) {
+      spacebarDown = false
+    }
+    else if (e.key in keyToNote) {
+      scope.checkPressed(keyToNote[e.key], 'up')
     }
   })
 }
+
 

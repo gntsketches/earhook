@@ -2,13 +2,15 @@ todo
     compare timeouts with Seo's debounce
 
 todo goal for weekend: playable thing
-    clear all timeouts on off
-    highlight response note
-    match reset button
-    install modal
-        data structure for messaging
-    compose some drone pitches in Ableton!
+    call highlight & training wheels on/off option
     prevent double-tap on correct note from causing a miss
+    match reset button
+    compose some drone pitches in Ableton!
+
+    tutorial modal
+        need a data structure for messaging
+        second priority to highlighting etc...
+            direct instruction should be second to intuitive UI
 
     basic leveling system
         just get through major (and play it) a bunch before moving on to minor
@@ -39,7 +41,7 @@ REDUCE FILE SIZE
 
 DEV QUESTIONS
     store progress data with scale data?
-
+    arrow vs non-arrow methods
 
 
 
@@ -84,13 +86,6 @@ FEATURES
             after you've unlocked all those roots, the root will change randomly
 
 
-            <select className="select-scale" onChange={() => {console.log('changing scale')}}>
-              <option>Major</option><option>Minor</option>
-            </select>
-            <select>
-              <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option>
-            </select>
-
 
 LEVEL TRACK UNLOCKS
     Major   R ** M2 ** M3 ** P4 ** P5 ** M6 ** M7 ** 8v (Lydian & Myxolydian unlock at Major 8v)
@@ -106,3 +101,16 @@ LATER ("Premium")
     match/miss splash
         different speed for apply/remove styles?
         other sorts of animations? confetti?
+
+
+
+MISC DEBRIS
+      responseReceivedTime: null,
+      maxNoteCallWait: 5000,
+
+            <select className="select-scale" onChange={() => {console.log('changing scale')}}>
+              <option>Major</option><option>Minor</option>
+            </select>
+            <select>
+              <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option>
+            </select>
