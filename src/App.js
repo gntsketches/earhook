@@ -22,7 +22,9 @@ class App extends React.Component {
     this.state = {
       appStarted: false,
       noteCallWait: 4000,
-      calledNote: 'C4',
+      callNote: 'C4',
+      sameCallCount: 0,
+      sameCallLimit: 2,
       // showCalled: false,  // for "training wheels"
       noteCalledTime: null,
       callerTimeout: null,
@@ -85,7 +87,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { appStarted, levelTracking, currentScale, matchStyle, missStyle } = this.state
+    const { appStarted, sameCallLimit, levelTracking, currentScale, matchStyle, missStyle } = this.state
     // console.log('matchStyle', matchStyle, 'missStyle', missStyle)
     // console.log('currentScaleMatchCounts', this.currentScaleMatchCounts)
     // console.log('currentLevel', this.currentLevel)
@@ -93,16 +95,23 @@ class App extends React.Component {
       <div className="app">
 
         <header className="app-header">
-          <div className="scale-level">
+          <div className="header-left">
             <h4>{currentScale} scale, {levelTracking[currentScale].level} notes</h4>
+          </div>
+          <div className="header-right">
+            <h4>same call limit: {sameCallLimit}</h4>
           </div>
         </header>
 
-        <div className="start-n-splash">
+        <div
+          className={appStarted ? 'start-n-splash pulse' : 'start-n-splash'}
+        >
           <div className={matchStyle ? 'match-count splash' : 'match-count'}>
             Match: {this.currentMatchCount.match}
           </div>
-          <div className="start-stop" onClick={this.startStop} >
+          <div
+              className="start-stop"
+              onClick={this.startStop} >
             <h2>{ appStarted ? 'Stop' : 'Start' }</h2>
           </div>
           <div className={missStyle ? 'miss-count splash' : 'miss-count'}>
@@ -144,8 +153,18 @@ class App extends React.Component {
   // GENERAL
   // ---------------------------------------------------------------------------------
   pickCallNote() {
+    const { callNote, sameCallCount, sameCallLimit } = this.state
+    console.log('sameCallCount', sameCallCount)
     const notes = this.activeNotes
-    const pick = notes[Math.floor(Math.random()*notes.length)]
+    let pick
+    do {
+      pick = notes[Math.floor(Math.random()*notes.length)]
+    } while (sameCallCount >= sameCallLimit-1 && pick === callNote)
+    if (sameCallCount >= sameCallLimit-1) {
+      this.setState({sameCallCount: 0})
+    } else {
+      this.setState({sameCallCount: sameCallCount+1})
+    }
     // console.log('pick', pick)
     return pick
   }
@@ -161,7 +180,7 @@ class App extends React.Component {
   }
 
   sendCall = () => {
-    const { appStarted, calledNote, noteCallWait, callerTimeout } = this.state
+    const { appStarted, callNote, noteCallWait, callerTimeout } = this.state
     const { setTimeout, clearTimeout } = this.props
 
     if (appStarted) {
@@ -172,13 +191,13 @@ class App extends React.Component {
         callerTimeout: setTimeout(this.sendCall, noteCallWait)
       }, () => {
         // console.log('timeout', this.state.callerTimeout)
-        this.caller.triggerAttackRelease(calledNote, '8n')
+        this.caller.triggerAttackRelease(callNote, '8n')
       })
     }
   }
 
   sendResponse = (note) => {
-    const { calledNote, noteCalledTime, callerTimeout, currentScale, levelTracking, playerLevel } = this.state
+    const { callNote, noteCalledTime, callerTimeout, currentScale, levelTracking, playerLevel } = this.state
     const { setTimeout } = this.props;
 
     // play back your note
@@ -188,18 +207,18 @@ class App extends React.Component {
     if (this.state.appStarted) {
 
       // test match and update level data
-      console.log('currentMatchCount', this.currentMatchCount)
+      // console.log('currentMatchCount', this.currentMatchCount)
       const newMatchCount = { ...this.currentMatchCount }
-      let newCalledNote
+      let newcallNote
       let matchSplash = false
       let missSplash = false
-      if (note === calledNote) {
+      if (note === callNote) {
         newMatchCount.match = this.currentMatchCount.match + 1
-        newCalledNote = this.pickCallNote()
+        newcallNote = this.pickCallNote()
         matchSplash = true
       } else {
         newMatchCount.miss = this.currentMatchCount.miss + 1
-        newCalledNote = calledNote
+        newcallNote = callNote
         missSplash = true
       }
       const newLevelTracking = { ...levelTracking }
@@ -210,7 +229,7 @@ class App extends React.Component {
 
       this.setState({
         responseNote: note,
-        calledNote: newCalledNote,
+        callNote: newcallNote,
         matchStyle: matchSplash,
         missStyle: missSplash,
         responseReceivedTime: Date.now(),
@@ -229,9 +248,9 @@ class App extends React.Component {
     const counts = matchCounts[level-1]
     const { match, miss } = counts
     const matchToMissRatio = match/miss
-    console.log('match/miss', matchToMissRatio)
+    // console.log('match/miss', matchToMissRatio)
     if (match > 10 && (miss === 0 || matchToMissRatio > 10)) {
-      console.log('leveling up')
+      // console.log('leveling up')
       const newLevelTracking = { ...levelTracking }
       newLevelTracking[currentScale].level += 1
       this.setState({ levelTracking: newLevelTracking })

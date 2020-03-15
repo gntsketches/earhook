@@ -2,18 +2,20 @@ todo
     compare timeouts with Seo's debounce
 
 todo goal for weekend: playable thing
+    need to play each new type of pitch at least _x_ times
     what happens if it plays a note, then you play the wrong note,
         then play right right note (before it responds?)
-    limit same-note reps thing
     basic leveling system
         just get through major (and play it) a bunch before moving on to minor
             because: need to define advancement rhythm, code, test this whole concept
         advancement at:
             minMatchCount && match/missRatio
-            need to play each new type of pitch at least _x_ times
+            reset count option
         install modal
     look over those variable names, yipe. need to refactor before going any further.
 
+    timing: maybe have some sort of averaging system for playback time?
+        like it averages the last x notes
 
     reduce file size
         move levelTracking to it's own file
@@ -62,7 +64,7 @@ FEATURES
             & style on 'root' note with different background
         root starts on C, but can change
             after major scale is complete, root can go up the scale to outline modes
-
+            after you've unlocked all those roots, the root will change randomly
 
 
             <select className="select-scale" onChange={() => {console.log('changing scale')}}>
