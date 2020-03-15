@@ -2,15 +2,7 @@ todo
     compare timeouts with Seo's debounce
 
 todo goal for weekend: playable thing
-    call highlight & training wheels on/off option
-        cool, works but:
-            disable match/miss count when it's active
-            set to false, user can select training
-                this shows an alert and greys out matches
-            any more advanced use of this needs to be paired with tutorial modal
-                because: a) the code logic for both needs to be located together
-                and b) it's confusing for the user if if starts with flashes
-                    and then they go away
+    trim C3 D3 to C, D
     compose some drone pitches in Ableton!
     look over those variable names, yipe. need to refactor before going any further.
 
@@ -39,6 +31,11 @@ PONDERING
             previous timeout is cleared, new one set from the noteCalledTime
                 got a problem with that?
 
+    call highlight: any more advanced use of this needs to be paired with tutorial modal
+        because: a) the code logic for both needs to be located together
+        and b) it's confusing for the user if if starts with flashes
+            and then they go away
+
 REDUCE FILE SIZE
         move levelTracking to it's own file
         components for:
@@ -63,6 +60,8 @@ TUTORIAL / NOTIFICATIONS
 
 
 FEATURES
+    show newLevelNoteMatchesToNextLevel in UI
+        "Next: 3/8 G"
     modal overlay for level advance (display unlocked, stats, etc.)
     drone pitches in background
         turn-off-able
@@ -101,6 +100,7 @@ LEVEL TRACK UNLOCKS
 
 
 LATER ("Premium")
+    octave-switch & other instruments
     advanced scales beyond diatonic
     scoop
     multi-note expressions

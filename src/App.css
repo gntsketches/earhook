@@ -21,6 +21,16 @@ body {
   padding: 10px;
 }
 
+.toggle-note-splash {
+  min-width: 150px;
+  min-height: 20px;
+  padding: 4px;
+  margin: 10px;
+  background: chocolate;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 
 /* START N SPLASH ***************************************/
 
@@ -49,6 +59,10 @@ body {
 .match-count.splash, .miss-count.splash {
   background: #fff;
   color: #000;
+}
+
+.grey-matches {
+  opacity: 0.5;
 }
 
 .start-stop {
@@ -95,9 +109,6 @@ body {
   display: flex; justify-content: center; align-items: center;
 }
 
-.note.training-wheels {
-
-}
 
 .note.down {
   border-color: #7d7f89;

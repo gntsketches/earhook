@@ -87,7 +87,7 @@ class App extends React.Component {
       return (
         <div
           className={`note ${downStyle} ${splashStyle}`}
-          key={note}
+
           // onClick={() => this.sendResponse(note)}
           onMouseDown={() => this.checkPressed(note, 'down')}
           onMouseUp={() => this.checkPressed(note, 'up')}
@@ -100,10 +100,17 @@ class App extends React.Component {
   }
 
   render() {
-    const { appStarted, sameCallLimit, levelTracking, currentScale, matchStyle, missStyle } = this.state
+    const {
+      appStarted, sameCallLimit, levelTracking, currentScale,
+      matchStyle, missStyle, showCalledNoteSplashes
+    } = this.state
     // console.log('matchStyle', matchStyle, 'missStyle', missStyle)
     // console.log('currentScaleMatchCounts', this.currentScaleMatchCounts)
     // console.log('currentLevel', this.currentLevel)
+    const matchSplash = matchStyle  && !showCalledNoteSplashes ? 'splash' : ''
+    const missSplash = missStyle && !showCalledNoteSplashes ? 'splash' : ''
+    const greyMatches = showCalledNoteSplashes ? 'grey-matches' : ''
+
     return (
       <div className="app">
 
@@ -113,13 +120,17 @@ class App extends React.Component {
           </div>
           <div className="header-right">
             <h4>same call limit: {sameCallLimit}</h4>
+            <h4
+              className="toggle-note-splash"
+              onClick={this.toggleCalledNoteSplashes}
+            >{showCalledNoteSplashes ? 'Hide called notes' : 'Show called notes'}</h4>
           </div>
         </header>
 
         <div
           className={appStarted ? 'start-n-splash pulse' : 'start-n-splash'}
         >
-          <div className={matchStyle ? 'match-count splash' : 'match-count'}>
+          <div className={`match-count ${matchSplash} ${greyMatches}`}>
             Match: {this.currentMatchCount.match}
           </div>
           <div
@@ -127,7 +138,7 @@ class App extends React.Component {
               onClick={this.startStop} >
             <h2>{ appStarted ? 'Stop' : 'Start' }</h2>
           </div>
-          <div className={missStyle ? 'miss-count splash' : 'miss-count'}>
+          <div className={`miss-count ${missSplash} ${greyMatches}`}>
             Miss: {this.currentMatchCount.miss}
           </div>
         </div>
@@ -176,6 +187,17 @@ class App extends React.Component {
     }
     // console.log('pick', pick)
     return pick
+  }
+
+  toggleCalledNoteSplashes = () => {
+    const { showCalledNoteSplashes } = this.state
+    if (showCalledNoteSplashes) {
+      this.setState({ showCalledNoteSplashes: false })
+    } else {
+      this.setState({ showCalledNoteSplashes: true })
+      window.alert('Called-note highlighting is a "training wheels" feature. ' +
+        'It disables match/miss tally and level advancement.')
+    }
   }
 
   // PLAY
@@ -245,7 +267,7 @@ class App extends React.Component {
     // console.log('sendResponse', note)
     const {
       acceptMatchesUpdate, callNote, noteCalledTime, callerTimeout,
-      currentScale, levelTracking, newLevelNoteMatches
+      currentScale, levelTracking, newLevelNoteMatches, showCalledNoteSplashes,
     } = this.state
     const { setTimeout } = this.props;
 
@@ -281,7 +303,7 @@ class App extends React.Component {
       //  update the current match status
       const newLevelTracking = { ...levelTracking }
       // console.log('acceptMatchesUpdate', acceptMatchesUpdate)
-      if (acceptMatchesUpdate) {
+      if (acceptMatchesUpdate && !showCalledNoteSplashes) {
         newLevelTracking[currentScale].matchCounts[this.currentLevel-1] = newMatchCount
       }
 
