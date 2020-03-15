@@ -3,7 +3,6 @@ todo
 
 todo goal for weekend: playable thing
     call highlight & training wheels on/off option
-    prevent double-tap on correct note from causing a miss
     match reset button
     compose some drone pitches in Ableton!
 
@@ -102,7 +101,18 @@ LATER ("Premium")
         different speed for apply/remove styles?
         other sorts of animations? confetti?
 
-
+INSIGHTS
+    direct instruction should be second to intuitive UI
+    code should reflect how you use language to think about it
+        have state reflect what is happening:
+        "only update the matches if it's the first press of the correct note"
+            set a counter for 'correctResponse' and only update matches if it's 1
+        what I did was:
+            when a new call happens, acceptMatchesUpdate === true
+                it updates match/miss *count* if that's true
+                on response then it's set to false
+                so further responses match/miss counts are ignored
+                    until the next call sets it true again
 
 MISC DEBRIS
       responseReceivedTime: null,

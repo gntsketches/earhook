@@ -6,7 +6,7 @@ import './reset.css'
 import './global.css'
 import './App.css'
 
-import { scales, keyToNote } from "./constants"
+import { scales } from "./constants"
 import { addListeners } from "./key_listeners"
 
 class App extends React.Component {
@@ -22,6 +22,8 @@ class App extends React.Component {
     this.state = {
       appStarted: false,
       noteCallWait: 4000,
+      acceptMatchesUpdate: false,
+      pickNewCallNote: false,
       callNote: 'C4',
       callCount: 0,
       callCountLimit: 3,
@@ -35,7 +37,7 @@ class App extends React.Component {
       matchStyle: false,
       missStyle: false,
       pressed: [],
-      // showCalled: false,  // for "training wheels"
+      showCalled: false,  // for "training wheels"
       // showTutorialModal: false,
 
       currentScale: 'major',
@@ -76,7 +78,7 @@ class App extends React.Component {
   // ---------------------------------------------------------------------------------
   renderNoteDisplay() {
     const { pressed } = this.state
-    console.log('render pressed', pressed)
+    // console.log('render pressed', pressed)
     const notes = this.activeNotes
     const noteDisplay = notes.map((note, index) => {
       return (
@@ -191,7 +193,7 @@ class App extends React.Component {
 
   checkPressed = (note, downOrUp) => {
     const { pressed } = this.state
-    console.log('checkPressed', pressed)
+    // console.log('checkPressed', pressed)
     if (pressed.indexOf(note) === -1 && downOrUp === 'down') {
       const newPressed = [ ...pressed, note]
       this.setState({ pressed: newPressed}, () => this.sendResponse(note))
@@ -202,10 +204,11 @@ class App extends React.Component {
   }
 
   sendCall = () => {
-    console.log('sendCall')
+    // console.log('sendCall')
     const {
-      appStarted, callNote, noteCallWait, callCount, callCountLimit, callerTimeout
+      appStarted, pickNewCallNote, noteCallWait, callCount, callCountLimit, callerTimeout
     } = this.state
+    let { callNote } = this.state
     const { setTimeout, clearTimeout } = this.props
 
     clearTimeout(callerTimeout)
@@ -215,22 +218,31 @@ class App extends React.Component {
       return
     }
 
+    if (pickNewCallNote) {
+      callNote = this.pickCallNote()
+    }
+
     if (appStarted) {
       this.setState({
         appStarted: true,
+        callNote: callNote,
         callCount: callCount+1,
+        acceptMatchesUpdate: true,
         noteCalledTime: Date.now(),
         callerTimeout: setTimeout(this.sendCall, noteCallWait)
       }, () => {
-        console.log('timeout', this.state.callerTimeout)
+        // console.log('timeout', this.state.callerTimeout)
         this.caller.triggerAttackRelease(callNote, '8n')
       })
     }
   }
 
   sendResponse = (note) => {
-    console.log('sendResponse', note)
-    const { callNote, noteCalledTime, callerTimeout, currentScale, levelTracking, newLevelNoteMatches } = this.state
+    // console.log('sendResponse', note)
+    const {
+      acceptMatchesUpdate, callNote, noteCalledTime, callerTimeout,
+      currentScale, levelTracking, newLevelNoteMatches
+    } = this.state
     const { setTimeout } = this.props;
 
     // play back your note
@@ -239,16 +251,17 @@ class App extends React.Component {
 
     if (this.state.appStarted) {
 
-      // test match and update level data
-      // console.log('currentMatchCount', this.currentMatchCount)
+      // set up identifiers
       const newMatchCount = { ...this.currentMatchCount }
-      let newcallNote
+      let setPickNewCallNote = false
       let matchSplash = false
       let missSplash = false
       let newLevelNoteIncrement = 0
+
+      // test match and update identifiers
       if (note === callNote) {
         newMatchCount.match = this.currentMatchCount.match + 1
-        newcallNote = this.pickCallNote()
+        setPickNewCallNote = true
         matchSplash = true
         if (note === this.activeNotes[this.activeNotes.length-1]) {
           newLevelNoteIncrement = 1
@@ -256,18 +269,22 @@ class App extends React.Component {
         }
       } else {
         newMatchCount.miss = this.currentMatchCount.miss + 1
-        newcallNote = callNote
+        setPickNewCallNote = false
         missSplash = true
       }
-      const newLevelTracking = { ...levelTracking }
-      newLevelTracking[currentScale].matchCounts[this.currentLevel-1] = newMatchCount
-
-      //  set response timing
       const responseInterval = Date.now() - noteCalledTime
+
+      //  update the current match status
+      const newLevelTracking = { ...levelTracking }
+      // console.log('acceptMatchesUpdate', acceptMatchesUpdate)
+      if (acceptMatchesUpdate) {
+        newLevelTracking[currentScale].matchCounts[this.currentLevel-1] = newMatchCount
+      }
 
       this.setState({
         responseNote: note,
-        callNote: newcallNote,
+        pickNewCallNote: setPickNewCallNote,
+        acceptMatchesUpdate: false,
         callCount: 0,
         matchStyle: matchSplash,
         missStyle: missSplash,

@@ -95,6 +95,10 @@ body {
   display: flex; justify-content: center; align-items: center;
 }
 
+.note.training-wheels {
+
+}
+
 .note.down {
   border: 2px solid #7d7f89;
 }
