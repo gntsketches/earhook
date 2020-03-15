@@ -2,12 +2,18 @@ todo
     compare timeouts with Seo's debounce
 
 todo goal for weekend: playable thing
+    what happens if it plays a note, then you play the wrong note,
+        then play right right note (before it responds?)
+    limit same-note reps thing
     basic leveling system
         just get through major (and play it) a bunch before moving on to minor
             because: need to define advancement rhythm, code, test this whole concept
-            advancement at: minMatchCount && match/missRatio
+        advancement at:
+            minMatchCount && match/missRatio
+            need to play each new type of pitch at least _x_ times
+        install modal
     look over those variable names, yipe. need to refactor before going any further.
-    key listeners
+
 
     reduce file size
         move levelTracking to it's own file
@@ -40,6 +46,7 @@ FEATURES
     track timing average at level
     persistence
     mode-switching options
+    drone pitches in background
     display BPM as goes (tempo averaging?)
     flash starting pitch
         "training wheels" option
@@ -47,6 +54,15 @@ FEATURES
             flash every pitch (how to limit re:
             (how to limit re: advancement and scoring?)
     timing minimums
+
+    ROOT NOTE SYSTEM
+        this is how you manage expressions that go below the root
+            without messing up/over-complicating the 13-note system
+        play drone pitch in background
+            & style on 'root' note with different background
+        root starts on C, but can change
+            after major scale is complete, root can go up the scale to outline modes
+
 
 
             <select className="select-scale" onChange={() => {console.log('changing scale')}}>

@@ -6,9 +6,13 @@ import './reset.css'
 import './global.css'
 import './App.css'
 
-import { scales } from "./constants"
+import { scales, keyToNote } from "./constants"
+import { addListeners } from "./key_listeners"
 
 class App extends React.Component {
+
+  // LIFECYCLE
+  // ---------------------------------------------------------------------------------
   constructor() {
     super();
 
@@ -37,6 +41,11 @@ class App extends React.Component {
             { miss: 0, match: 0 },
             { miss: 0, match: 0 },
             { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
           ],
         },
         minor: {
@@ -50,8 +59,11 @@ class App extends React.Component {
           ],
         },
       },
-
     }
+  }
+
+  componentDidMount() {
+    addListeners(this)
   }
 
 
@@ -217,9 +229,9 @@ class App extends React.Component {
     const counts = matchCounts[level-1]
     const { match, miss } = counts
     const matchToMissRatio = match/miss
-    // console.log('match/miss', matchToMissRatio)
+    console.log('match/miss', matchToMissRatio)
     if (match > 10 && (miss === 0 || matchToMissRatio > 10)) {
-      // console.log('leveling up')
+      console.log('leveling up')
       const newLevelTracking = { ...levelTracking }
       newLevelTracking[currentScale].level += 1
       this.setState({ levelTracking: newLevelTracking })
