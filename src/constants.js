@@ -16,3 +16,10 @@ export const keyToNote = {
   ';': 'B4',
   "'": 'C5',
 }
+
+// export const limits = {
+//   noteCallWait: 4000,
+//   callCountLimit: 3,
+//   sameCallLimit: 2,
+//   newLevelNoteMatchesToNextLevel: 8,
+// }

@@ -23,6 +23,8 @@ class App extends React.Component {
       appStarted: false,
       noteCallWait: 4000,
       callNote: 'C4',
+      callCount: 0,
+      callCountLimit: 3,
       sameCallCount: 0,
       sameCallLimit: 2,
       newLevelNoteMatches: 0,
@@ -129,7 +131,7 @@ class App extends React.Component {
   }
 
 
-  // GETTERS
+  // GETTERS & HELPERS
   // ---------------------------------------------------------------------------------
   get activeNotes() {
     const { currentScale, levelTracking } = this.state
@@ -151,9 +153,6 @@ class App extends React.Component {
     return levelTracking[currentScale].matchCounts[this.currentLevel-1]
   }
 
-
-  // GENERAL
-  // ---------------------------------------------------------------------------------
   pickCallNote() {
     const { callNote, sameCallCount, sameCallLimit } = this.state
     const notes = this.activeNotes
@@ -170,24 +169,38 @@ class App extends React.Component {
     return pick
   }
 
+  // PLAY
+  // ---------------------------------------------------------------------------------
+
   startStop = () => {
     const { appStarted } = this.state
 
     if (appStarted) {
-      this.setState({ appStarted: false })
+      this.setState({
+        appStarted: false,
+        callCount: 0,
+      })
     } else {
       this.setState({ appStarted: true }, () => { this.sendCall() })
     }
   }
 
   sendCall = () => {
-    const { appStarted, callNote, noteCallWait, callerTimeout } = this.state
+    const {
+      appStarted, callNote, noteCallWait, callCount, callCountLimit, callerTimeout
+    } = this.state
     const { setTimeout, clearTimeout } = this.props
+
+    if (callCount >= callCountLimit) {
+      this.startStop()
+      return
+    }
 
     if (appStarted) {
       clearTimeout(callerTimeout)
       this.setState({
         appStarted: true,
+        callCount: callCount+1,
         noteCalledTime: Date.now(),
         callerTimeout: setTimeout(this.sendCall, noteCallWait)
       }, () => {
@@ -236,6 +249,7 @@ class App extends React.Component {
       this.setState({
         responseNote: note,
         callNote: newcallNote,
+        callCount: 0,
         matchStyle: matchSplash,
         missStyle: missSplash,
         newLevelNoteMatches: newLevelNoteMatches + newLevelNoteIncrement,

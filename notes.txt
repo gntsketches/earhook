@@ -2,8 +2,8 @@ todo
     compare timeouts with Seo's debounce
 
 todo goal for weekend: playable thing
-    auto-off (after say 3 dead notes)
     clear all timeouts on off
+    highlight response note
     match reset button
     install modal
         data structure for messaging
