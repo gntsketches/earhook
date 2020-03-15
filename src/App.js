@@ -25,6 +25,8 @@ class App extends React.Component {
       callNote: 'C4',
       sameCallCount: 0,
       sameCallLimit: 2,
+      newLevelNoteMatches: 0,
+      newLevelNoteMatchesToNextLevel: 8,  // REALLY? That's what you're calling it?
       // showCalled: false,  // for "training wheels"
       noteCalledTime: null,
       callerTimeout: null,
@@ -154,7 +156,6 @@ class App extends React.Component {
   // ---------------------------------------------------------------------------------
   pickCallNote() {
     const { callNote, sameCallCount, sameCallLimit } = this.state
-    console.log('sameCallCount', sameCallCount)
     const notes = this.activeNotes
     let pick
     do {
@@ -197,7 +198,7 @@ class App extends React.Component {
   }
 
   sendResponse = (note) => {
-    const { callNote, noteCalledTime, callerTimeout, currentScale, levelTracking, playerLevel } = this.state
+    const { callNote, noteCalledTime, callerTimeout, currentScale, levelTracking, newLevelNoteMatches } = this.state
     const { setTimeout } = this.props;
 
     // play back your note
@@ -212,10 +213,15 @@ class App extends React.Component {
       let newcallNote
       let matchSplash = false
       let missSplash = false
+      let newLevelNoteIncrement = 0
       if (note === callNote) {
         newMatchCount.match = this.currentMatchCount.match + 1
         newcallNote = this.pickCallNote()
         matchSplash = true
+        if (note === this.activeNotes[this.activeNotes.length-1]) {
+          newLevelNoteIncrement = 1
+          console.log('newLevelNoteMatch', note)
+        }
       } else {
         newMatchCount.miss = this.currentMatchCount.miss + 1
         newcallNote = callNote
@@ -232,6 +238,7 @@ class App extends React.Component {
         callNote: newcallNote,
         matchStyle: matchSplash,
         missStyle: missSplash,
+        newLevelNoteMatches: newLevelNoteMatches + newLevelNoteIncrement,
         responseReceivedTime: Date.now(),
         callerTimeout: setTimeout(this.sendCall, responseInterval),
         matchCounts: newLevelTracking,
@@ -243,17 +250,25 @@ class App extends React.Component {
   }
 
   checkForAdvance() {
-    const { currentScale, levelTracking } = this.state
+    const {
+      currentScale, levelTracking, newLevelNoteMatches, newLevelNoteMatchesToNextLevel
+    } = this.state
     const { level, matchCounts } = levelTracking[currentScale]
     const counts = matchCounts[level-1]
     const { match, miss } = counts
     const matchToMissRatio = match/miss
     // console.log('match/miss', matchToMissRatio)
-    if (match > 10 && (miss === 0 || matchToMissRatio > 10)) {
+    if (match > 10
+      && (miss === 0 || matchToMissRatio > 10)
+      && newLevelNoteMatches >= newLevelNoteMatchesToNextLevel
+    ) {
       // console.log('leveling up')
       const newLevelTracking = { ...levelTracking }
       newLevelTracking[currentScale].level += 1
-      this.setState({ levelTracking: newLevelTracking })
+      this.setState({
+        levelTracking: newLevelTracking,
+        newLevelNoteMatches: 0,
+      })
     }
   }
 

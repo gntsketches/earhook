@@ -43,6 +43,7 @@ body {
   transition-property: background-color, color;
   transition-timing-function: linear;
   transition-duration: 100ms;
+  user-select: none;
 }
 
 .match-count.splash, .miss-count.splash {

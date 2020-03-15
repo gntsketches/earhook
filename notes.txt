@@ -2,22 +2,34 @@ todo
     compare timeouts with Seo's debounce
 
 todo goal for weekend: playable thing
-    need to play each new type of pitch at least _x_ times
-    what happens if it plays a note, then you play the wrong note,
-        then play right right note (before it responds?)
+    auto-off (after say 4 dead notes)
+    clear all timeouts on off
+    install modal
+        data structure for messaging
+    compose some drone pitches in Ableton!
+
     basic leveling system
         just get through major (and play it) a bunch before moving on to minor
             because: need to define advancement rhythm, code, test this whole concept
-        advancement at:
-            minMatchCount && match/missRatio
             reset count option
-        install modal
     look over those variable names, yipe. need to refactor before going any further.
 
+
+PONDERING
     timing: maybe have some sort of averaging system for playback time?
         like it averages the last x notes
 
-    reduce file size
+    leveling: how do you really know when you've learned it?
+
+    re: newLevelNoteMatches
+        might want that to change for each note set.
+            a case for a larger scale/level data structure?
+
+    what happens if it plays a note, then you play the wrong note,
+        then play right right note (before it responds?)
+            (
+
+REDUCE FILE SIZE
         move levelTracking to it's own file
         components for:
     review renders
@@ -42,14 +54,16 @@ TUTORIAL / NOTIFICATIONS
 
 FEATURES
     modal overlay for level advance (display unlocked, stats, etc.)
-    callNote repeat limit (not more than say 4 Cs in a row)
-    auto-off (after say 4 dead notes)
+    drone pitches in background
+        turn-off-able
     more sophisticated leveling: steady tempo requirement, tempo minimums (how to do tempo averaging?)
     track timing average at level
     persistence
+        once you got your data structure figured out...
     mode-switching options
-    drone pitches in background
+    some way to track progress to next level
     display BPM as goes (tempo averaging?)
+        use a dial rather than displaying a number
     flash starting pitch
         "training wheels" option
             always play root first; always flash first note
