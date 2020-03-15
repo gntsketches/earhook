@@ -2,11 +2,13 @@ todo
     compare timeouts with Seo's debounce
 
 todo goal for weekend: playable thing
-    auto-off (after say 4 dead notes)
+    auto-off (after say 3 dead notes)
     clear all timeouts on off
+    match reset button
     install modal
         data structure for messaging
     compose some drone pitches in Ableton!
+    prevent double-tap on correct note from causing a miss
 
     basic leveling system
         just get through major (and play it) a bunch before moving on to minor
@@ -27,7 +29,8 @@ PONDERING
 
     what happens if it plays a note, then you play the wrong note,
         then play right right note (before it responds?)
-            (
+            previous timeout is cleared, new one set from the noteCalledTime
+                got a problem with that?
 
 REDUCE FILE SIZE
         move levelTracking to it's own file
