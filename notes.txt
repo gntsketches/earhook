@@ -3,19 +3,25 @@ todo
 
 todo goal for weekend: playable thing
     call highlight & training wheels on/off option
-    match reset button
+        cool, works but:
+            disable match/miss count when it's active
+            set to false, user can select training
+                this shows an alert and greys out matches
+            any more advanced use of this needs to be paired with tutorial modal
+                because: a) the code logic for both needs to be located together
+                and b) it's confusing for the user if if starts with flashes
+                    and then they go away
     compose some drone pitches in Ableton!
+    look over those variable names, yipe. need to refactor before going any further.
 
     tutorial modal
         need a data structure for messaging
-        second priority to highlighting etc...
-            direct instruction should be second to intuitive UI
+            so it needs more advanced leveling logic
 
     basic leveling system
-        just get through major (and play it) a bunch before moving on to minor
+        just get through major (and play it) a bunch
+            before moving on to minor unlock, drone pitch variation, etc
             because: need to define advancement rhythm, code, test this whole concept
-            reset count option
-    look over those variable names, yipe. need to refactor before going any further.
 
 
 PONDERING
@@ -60,6 +66,7 @@ FEATURES
     modal overlay for level advance (display unlocked, stats, etc.)
     drone pitches in background
         turn-off-able
+    match reset button
     more sophisticated leveling: steady tempo requirement, tempo minimums (how to do tempo averaging?)
     track timing average at level
     persistence
@@ -103,6 +110,8 @@ LATER ("Premium")
 
 INSIGHTS
     direct instruction should be second to intuitive UI
+        ideally, but then in this case it seems they need to be paired
+            (to make use of the note splash thing)
     code should reflect how you use language to think about it
         have state reflect what is happening:
         "only update the matches if it's the first press of the correct note"

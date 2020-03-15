@@ -34,10 +34,11 @@ class App extends React.Component {
       noteCalledTime: null,
       callerTimeout: null,
       responseNote: null,
-      matchStyle: false,
-      missStyle: false,
+      matchStyle: false,  // matchSplash
+      missStyle: false,  // missSplash
       pressed: [],
-      showCalled: false,  // for "training wheels"
+      showCalledNoteSplashes: true,  // for "training wheels"
+      calledNoteSplash: false,
       // showTutorialModal: false,
 
       currentScale: 'major',
@@ -77,13 +78,15 @@ class App extends React.Component {
   // RENDER
   // ---------------------------------------------------------------------------------
   renderNoteDisplay() {
-    const { pressed } = this.state
+    const { pressed, callNote, calledNoteSplash  } = this.state
     // console.log('render pressed', pressed)
     const notes = this.activeNotes
     const noteDisplay = notes.map((note, index) => {
+      const downStyle = pressed.includes(note) ? 'down' : ''
+      const splashStyle = calledNoteSplash && note === callNote ? 'splash' : ''
       return (
         <div
-          className={pressed.includes(note) ? 'note down' : 'note'}
+          className={`note ${downStyle} ${splashStyle}`}
           key={note}
           // onClick={() => this.sendResponse(note)}
           onMouseDown={() => this.checkPressed(note, 'down')}
@@ -206,7 +209,8 @@ class App extends React.Component {
   sendCall = () => {
     // console.log('sendCall')
     const {
-      appStarted, pickNewCallNote, noteCallWait, callCount, callCountLimit, callerTimeout
+      appStarted, pickNewCallNote, noteCallWait, callCount, callCountLimit,
+      callerTimeout, showCalledNoteSplashes
     } = this.state
     let { callNote } = this.state
     const { setTimeout, clearTimeout } = this.props
@@ -218,9 +222,7 @@ class App extends React.Component {
       return
     }
 
-    if (pickNewCallNote) {
-      callNote = this.pickCallNote()
-    }
+    if (pickNewCallNote) { callNote = this.pickCallNote() }
 
     if (appStarted) {
       this.setState({
@@ -229,10 +231,12 @@ class App extends React.Component {
         callCount: callCount+1,
         acceptMatchesUpdate: true,
         noteCalledTime: Date.now(),
+        calledNoteSplash: showCalledNoteSplashes,
         callerTimeout: setTimeout(this.sendCall, noteCallWait)
       }, () => {
         // console.log('timeout', this.state.callerTimeout)
         this.caller.triggerAttackRelease(callNote, '8n')
+        setTimeout(() => { this.setState({ calledNoteSplash: false }) }, 300)
       })
     }
   }

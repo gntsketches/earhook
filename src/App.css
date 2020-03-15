@@ -88,7 +88,7 @@ body {
   width: 100px; height: 100px;
   background: blue;
   color: white;
-  border: 2px solid #5b5f67;
+  border: 3px solid #5b5f67;
   margin: 10px;
   border-radius: 10px;
   cursor: pointer; user-select: none;
@@ -100,5 +100,9 @@ body {
 }
 
 .note.down {
-  border: 2px solid #7d7f89;
+  border-color: #7d7f89;
+}
+
+.note.splash {
+  background: #3333ff;
 }
