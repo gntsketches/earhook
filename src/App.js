@@ -78,6 +78,14 @@ class App extends React.Component {
             { miss: 0, match: 0 },
             { miss: 0, match: 0 },
             { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
           ],
         },
       },
@@ -91,36 +99,15 @@ class App extends React.Component {
 
   // RENDER
   // ---------------------------------------------------------------------------------
-  // renderNoteDisplay() {
-  //   const { pressed, callNote, calledNoteSplash  } = this.state
-  //   // console.log('render pressed', pressed)
-  //   const notes = this.activeNotes
-  //   const noteDisplay = notes.map((note, index) => {
-  //     const noteDisplay = note.slice(0, -1)
-  //     const downStyle = pressed.includes(note) ? 'down' : ''
-  //     const splashStyle = calledNoteSplash && note === callNote ? 'splash' : ''
-  //     return (
-  //       <div
-  //         className={`note ${downStyle} ${splashStyle}`}
-  //
-  //         // onClick={() => this.sendResponse(note)}
-  //         onMouseDown={() => this.checkPressed(note, 'down')}
-  //         onMouseUp={() => this.checkPressed(note, 'up')}
-  //       >
-  //         <h2>{noteDisplay}</h2>
-  //       </div>
-  //     )
-  //   })
-  //   return noteDisplay
-  // }
+
   renderNoteDisplay(zone) {
     const { pressed, callNote, calledNoteSplash, currentScale  } = this.state
     const notes = keyButtonLayouts[currentScale][zone]
 
     // console.log('render pressed', pressed)
-    console.log('activeNotes', this.activeNotes)
+    // console.log('activeNotes', this.activeNotes)
     const noteDisplay = notes.map((note, index) => {
-      console.log('note', note)
+      // console.log('note', note)
       const noteDisplay = note.includes('8') ? note.slice(0,-1) : note
       const downStyle = pressed.includes(note) ? 'down' : ''
       const splashStyle = calledNoteSplash && note === callNote ? 'splash' : ''
@@ -329,7 +316,7 @@ class App extends React.Component {
     // play back your note
     clearTimeout(callerTimeout)
 
-    note = note.includes('8') ? note + octave : note + (octave+1)
+    note = note.includes('8') ? note.slice(0,-1) + (octave+1) : note + octave
 
     this.responder.triggerAttackRelease(note, '8n')
 
@@ -349,7 +336,7 @@ class App extends React.Component {
         matchSplash = true
         if (note === this.activeNotes[this.activeNotes.length-1]) {
           newLevelNoteIncrement = 1
-          console.log('newLevelNoteMatch', note)
+          // console.log('newLevelNoteMatch', note)
         }
       } else {
         newMatchCount.miss = this.currentMatchCount.miss + 1

@@ -5,24 +5,19 @@ export const scales = {
 };
 
 export const keyToNote = {
-  'a': 'C',
-  's': 'D',
-  'd': 'E',
-  'f': 'F',
-  'g': 'G',
-  'h': 'A',
-  'j': 'B',
-  'k': 'C8',
+  c_major: {
+    'a': 'C', 's': 'D', 'd': 'E', 'f': 'F', 'g': 'G', 'h': 'A', 'j': 'B', 'k': 'C8', 'l': 'A', ';': 'B', "'": 'C8',
+    'w': 'C#', 'e': 'D#', 't': 'F#', 'y': 'G#', 'u': 'A#', 'o': 'G#', 'p': 'A#',
+  },
+  c_minor: {
+    'a': 'C', 's': 'D', 'd': 'E', 'f': 'F', 'g': 'G', 'h': 'A', 'j': 'B', 'k': 'C8', 'l': 'A', ';': 'B', "'": 'C8',
+    'w': 'Db', 'e': 'Eb', 't': 'Gb', 'y': 'Ab', 'u': 'Bb', 'o': 'Ab', 'p': 'Bb',
+  },
+  c_chromatic: {
+    'a': 'C', 's': 'D', 'd': 'E', 'f': 'F', 'g': 'G', 'h': 'A', 'j': 'B', 'k': 'C8', 'l': 'A', ';': 'B', "'": 'C8',
+    'w': 'C#', 'e': 'D#', 't': 'F#', 'y': 'G#', 'u': 'A#', 'o': 'G#', 'p': 'A#',
+  },
 
-  'w': 'C#',
-  'e': 'D#',
-  't': 'F#',
-  'y': 'G#',
-  'u': 'A#',
-
-  'l': 'A',
-  ';': 'B',
-  "'": 'C8',
 }
 
 export const keyButtonLayouts = {
