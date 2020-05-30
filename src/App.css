@@ -93,8 +93,22 @@ body {
 .note-zone {
   height: 50vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   background-color: #4a4e56;
+}
+
+.accidentals {
+  /*background: darkgrey;*/
+  display: flex;
+  justify-content: center;
+  margin-left: -65px;
+}
+
+.naturals {
+  /*background: darkcyan;*/
+  display: flex;
+  justify-content: center;
 }
 
 .notes {
@@ -102,15 +116,27 @@ body {
 }
 
 .note {
-  width: 100px; height: 100px;
+  width: 60px; height: 60px;
   background: blue;
   color: white;
   border: 3px solid #5b5f67;
-  margin: 10px;
+  margin: 0 0 8px 8px;
   border-radius: 10px;
-  cursor: pointer; user-select: none;
+  cursor: pointer; user-select: none; outline: none;
   display: flex; justify-content: center; align-items: center;
 }
+
+.note.none {
+  background: transparent;
+  border-color: transparent;
+  cursor: auto;
+}
+
+.note.inactive {
+  background: transparent;
+  cursor: auto;
+}
+
 
 
 .note.down {

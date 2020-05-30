@@ -1,6 +1,7 @@
 TODO
     Render chromatic
-
+        Keep keyButton display data structure separate from play data structure
+        just render based on scale, and modify based on note comparison
 
 
 

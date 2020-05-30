@@ -6,7 +6,7 @@ import './reset.css'
 import './global.css'
 import './App.css'
 
-import { scales } from "./constants"
+import { scales, keyButtonLayouts} from "./constants"
 import { addListeners } from "./key_listeners"
 
 class App extends React.Component {
@@ -42,9 +42,10 @@ class App extends React.Component {
       calledNoteSplash: false,
       // showTutorialModal: false,
 
-      currentScale: 'major',
+      // currentScale: 'c_major',
+      currentScale: 'c_minor',
       levelTracking: {
-        major: {
+        c_major: {
           level: 2,
           matchCounts: [
             { miss: 0, match: 0 },
@@ -57,7 +58,7 @@ class App extends React.Component {
             { miss: 0, match: 0 },
           ],
         },
-        minor: {
+        c_minor: {
           level: 3,
           matchCounts: [
             null,
@@ -78,24 +79,54 @@ class App extends React.Component {
 
   // RENDER
   // ---------------------------------------------------------------------------------
-  renderNoteDisplay() {
+  // renderNoteDisplay() {
+  //   const { pressed, callNote, calledNoteSplash  } = this.state
+  //   // console.log('render pressed', pressed)
+  //   const notes = this.activeNotes
+  //   const noteDisplay = notes.map((note, index) => {
+  //     const noteDisplay = note.slice(0, -1)
+  //     const downStyle = pressed.includes(note) ? 'down' : ''
+  //     const splashStyle = calledNoteSplash && note === callNote ? 'splash' : ''
+  //     return (
+  //       <div
+  //         className={`note ${downStyle} ${splashStyle}`}
+  //
+  //         // onClick={() => this.sendResponse(note)}
+  //         onMouseDown={() => this.checkPressed(note, 'down')}
+  //         onMouseUp={() => this.checkPressed(note, 'up')}
+  //       >
+  //         <h2>{noteDisplay}</h2>
+  //       </div>
+  //     )
+  //   })
+  //   return noteDisplay
+  // }
+  renderNoteDisplay(notes) {
     const { pressed, callNote, calledNoteSplash  } = this.state
     // console.log('render pressed', pressed)
-    const notes = this.activeNotes
+    console.log('activeNotes', this.activeNotes)
     const noteDisplay = notes.map((note, index) => {
+      console.log('note', note)
+      const noteDisplay = note
       const downStyle = pressed.includes(note) ? 'down' : ''
       const splashStyle = calledNoteSplash && note === callNote ? 'splash' : ''
-      return (
-        <div
-          className={`note ${downStyle} ${splashStyle}`}
+      if (noteDisplay === null) return <div className="note none" />
 
-          // onClick={() => this.sendResponse(note)}
-          onMouseDown={() => this.checkPressed(note, 'down')}
-          onMouseUp={() => this.checkPressed(note, 'up')}
-        >
-          <h1>{note}</h1>
-        </div>
-      )
+      if (this.activeNotes.length === 1
+        || (index < notes.length-1 && this.activeNotes.includes(note + '4'))
+        || ((index !== 0 && note === notes[0]) && this.activeNotes.includes(note + '5'))) {
+        return (
+          <div
+            className={`note ${downStyle} ${splashStyle}`}
+            onMouseDown={() => this.checkPressed(note, 'down')}
+            onMouseUp={() => this.checkPressed(note, 'up')}
+          >
+            <h2>{noteDisplay === 'off' ? '' : noteDisplay}</h2>
+          </div>
+        )
+      } else {
+        return <div className="note inactive" />
+      }
     })
     return noteDisplay
   }
@@ -145,7 +176,12 @@ class App extends React.Component {
         </div>
 
         <div className="note-zone">
-          {this.renderNoteDisplay()}
+          <div className="accidentals">
+            {this.renderNoteDisplay(keyButtonLayouts[currentScale].accidentals)}
+          </div>
+          <div className="naturals">
+            {this.renderNoteDisplay(keyButtonLayouts[currentScale].naturals)}
+          </div>
         </div>
       </div>
     )
