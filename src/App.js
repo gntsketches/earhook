@@ -42,11 +42,11 @@ class App extends React.Component {
       calledNoteSplash: false,
       // showTutorialModal: false,
 
-      // currentScale: 'c_major',
-      currentScale: 'c_minor',
+      currentScale: 'c_major',
+      // currentScale: 'c_minor',
       levelTracking: {
         c_major: {
-          level: 2,
+          level: 3,
           matchCounts: [
             { miss: 0, match: 0 },
             { miss: 0, match: 0 },
@@ -101,16 +101,17 @@ class App extends React.Component {
   //   })
   //   return noteDisplay
   // }
-  renderNoteDisplay(notes) {
-    const { pressed, callNote, calledNoteSplash  } = this.state
+  renderNoteDisplay(zone) {
+    const { pressed, callNote, calledNoteSplash, currentScale  } = this.state
     // console.log('render pressed', pressed)
     console.log('activeNotes', this.activeNotes)
+    const notes = keyButtonLayouts[currentScale][zone]
     const noteDisplay = notes.map((note, index) => {
       console.log('note', note)
       const noteDisplay = note
       const downStyle = pressed.includes(note) ? 'down' : ''
       const splashStyle = calledNoteSplash && note === callNote ? 'splash' : ''
-      if (noteDisplay === null) return <div className="note none" />
+      if (noteDisplay === null) return <div className="note none" key={`${zone}${index}`} />
 
       if (this.activeNotes.length === 1
         || (index < notes.length-1 && this.activeNotes.includes(note + '4'))
@@ -118,6 +119,7 @@ class App extends React.Component {
         return (
           <div
             className={`note ${downStyle} ${splashStyle}`}
+            key={`${zone}${index}`}
             onMouseDown={() => this.checkPressed(note, 'down')}
             onMouseUp={() => this.checkPressed(note, 'up')}
           >
@@ -125,7 +127,7 @@ class App extends React.Component {
           </div>
         )
       } else {
-        return <div className="note inactive" />
+        return <div className="note inactive" key={`${zone}${index}`} />
       }
     })
     return noteDisplay
@@ -177,10 +179,10 @@ class App extends React.Component {
 
         <div className="note-zone">
           <div className="accidentals">
-            {this.renderNoteDisplay(keyButtonLayouts[currentScale].accidentals)}
+            {this.renderNoteDisplay('accidentals')}
           </div>
           <div className="naturals">
-            {this.renderNoteDisplay(keyButtonLayouts[currentScale].naturals)}
+            {this.renderNoteDisplay('naturals')}
           </div>
         </div>
       </div>
