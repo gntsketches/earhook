@@ -43,21 +43,15 @@ class App extends React.Component {
       calledNoteSplash: false,
       // showTutorialModal: false,
 
-      // currentScale: 'c_major',
+      currentScale: 'c_major',
       // currentScale: 'c_minor',
-      currentScale: 'c_chromatic',
+      // currentScale: 'c_chromatic',
       levelTracking: {
         c_major: {
           level: 3,
           matchCounts: [
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
+            { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 },
+            { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 },
           ],
         },
         c_minor: {
@@ -73,18 +67,9 @@ class App extends React.Component {
         c_chromatic: {
           level: 3,
           matchCounts: [
-            null,
-            null,
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
-            { miss: 0, match: 0 },
+            null, null, { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 },
+            { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 },
+            { miss: 0, match: 0 }, { miss: 0, match: 0 }, { miss: 0, match: 0 },
             { miss: 0, match: 0 },
           ],
         },
@@ -283,7 +268,7 @@ class App extends React.Component {
 
     if (pickNewCallNote) { callNote = this.pickCallNote() }
 
-    const playableCallNote = callNote.includes('8') ? callNote + octave : callNote + (octave+1)
+    const playableCallNote = callNote.includes('8') ? callNote.slice(0,-1) + (octave+1) : callNote + octave
 
     if (appStarted) {
       this.setState({
@@ -316,15 +301,15 @@ class App extends React.Component {
     // play back your note
     clearTimeout(callerTimeout)
 
-    note = note.includes('8') ? note.slice(0,-1) + (octave+1) : note + octave
+    const playableNote = note.includes('8') ? note.slice(0,-1) + (octave+1) : note + octave
 
-    this.responder.triggerAttackRelease(note, '8n')
+    this.responder.triggerAttackRelease(playableNote, '8n')
 
     if (this.state.appStarted) {
 
       // set up identifiers
       const newMatchCount = { ...this.currentMatchCount }
-      let setPickNewCallNote = false
+      let setPickNewCallNote
       let matchSplash = false
       let missSplash = false
       let newLevelNoteIncrement = 0
@@ -353,7 +338,7 @@ class App extends React.Component {
       }
 
       this.setState({
-        responseNote: note,
+        responseNote: note,  // is this being used...?
         pickNewCallNote: setPickNewCallNote,
         acceptMatchesUpdate: false,
         callCount: 0,
