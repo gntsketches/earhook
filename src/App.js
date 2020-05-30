@@ -24,7 +24,8 @@ class App extends React.Component {
       noteCallWait: 4000,
       acceptMatchesUpdate: false,
       pickNewCallNote: false,
-      callNote: 'C4',
+      callNote: 'C',
+      octave: 3,
       callCount: 0,
       callCountLimit: 3,
       sameCallCount: 0,
@@ -42,8 +43,9 @@ class App extends React.Component {
       calledNoteSplash: false,
       // showTutorialModal: false,
 
-      currentScale: 'c_major',
+      // currentScale: 'c_major',
       // currentScale: 'c_minor',
+      currentScale: 'c_chromatic',
       levelTracking: {
         c_major: {
           level: 3,
@@ -59,6 +61,16 @@ class App extends React.Component {
           ],
         },
         c_minor: {
+          level: 3,
+          matchCounts: [
+            null,
+            null,
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+            { miss: 0, match: 0 },
+          ],
+        },
+        c_chromatic: {
           level: 3,
           matchCounts: [
             null,
@@ -103,19 +115,17 @@ class App extends React.Component {
   // }
   renderNoteDisplay(zone) {
     const { pressed, callNote, calledNoteSplash, currentScale  } = this.state
+    const notes = keyButtonLayouts[currentScale][zone]
+
     // console.log('render pressed', pressed)
     console.log('activeNotes', this.activeNotes)
-    const notes = keyButtonLayouts[currentScale][zone]
     const noteDisplay = notes.map((note, index) => {
       console.log('note', note)
-      const noteDisplay = note
+      const noteDisplay = note.includes('8') ? note.slice(0,-1) : note
       const downStyle = pressed.includes(note) ? 'down' : ''
       const splashStyle = calledNoteSplash && note === callNote ? 'splash' : ''
-      if (noteDisplay === null) return <div className="note none" key={`${zone}${index}`} />
-
-      if (this.activeNotes.length === 1
-        || (index < notes.length-1 && this.activeNotes.includes(note + '4'))
-        || ((index !== 0 && note === notes[0]) && this.activeNotes.includes(note + '5'))) {
+      if (note === 'none') return <div className="note none" key={`${zone}${index}`} />
+      if (this.activeNotes.includes(note)) {
         return (
           <div
             className={`note ${downStyle} ${splashStyle}`}
@@ -130,6 +140,7 @@ class App extends React.Component {
         return <div className="note inactive" key={`${zone}${index}`} />
       }
     })
+
     return noteDisplay
   }
 
@@ -269,12 +280,12 @@ class App extends React.Component {
 
   sendCall = () => {
     // console.log('sendCall')
+    const { setTimeout, clearTimeout } = this.props
     const {
       appStarted, pickNewCallNote, noteCallWait, callCount, callCountLimit,
-      callerTimeout, showCalledNoteSplashes
+      callerTimeout, showCalledNoteSplashes, octave,
     } = this.state
     let { callNote } = this.state
-    const { setTimeout, clearTimeout } = this.props
 
     clearTimeout(callerTimeout)
 
@@ -284,6 +295,8 @@ class App extends React.Component {
     }
 
     if (pickNewCallNote) { callNote = this.pickCallNote() }
+
+    const playableCallNote = callNote.includes('8') ? callNote + octave : callNote + (octave+1)
 
     if (appStarted) {
       this.setState({
@@ -297,7 +310,7 @@ class App extends React.Component {
         callerTimeout: setTimeout(this.sendCall, noteCallWait)
       }, () => {
         // console.log('timeout', this.state.callerTimeout)
-        this.caller.triggerAttackRelease(callNote, '8n')
+        this.caller.triggerAttackRelease(playableCallNote, '8n')
         setTimeout(() => {
           this.setState({ centerpieceSplash: false, calledNoteSplash: false })
         }, 300)
@@ -308,13 +321,16 @@ class App extends React.Component {
   sendResponse = (note) => {
     // console.log('sendResponse', note)
     const {
-      acceptMatchesUpdate, callNote, noteCalledTime, callerTimeout,
+      acceptMatchesUpdate, callNote, noteCalledTime, callerTimeout, octave,
       currentScale, levelTracking, newLevelNoteMatches, showCalledNoteSplashes,
     } = this.state
     const { setTimeout } = this.props;
 
     // play back your note
     clearTimeout(callerTimeout)
+
+    note = note.includes('8') ? note + octave : note + (octave+1)
+
     this.responder.triggerAttackRelease(note, '8n')
 
     if (this.state.appStarted) {
