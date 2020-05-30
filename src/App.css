@@ -67,12 +67,15 @@ body {
 
 .start-stop {
   width: 150px; height: 50px;
-  background-color: darkolivegreen;
+  background-color: darkolivegreen;  /* #556b2f */
   color: white;
   border-radius: 5px;
   cursor: pointer; user-select: none;
   display: flex;
   justify-content: center; align-items: center
+}
+.start-stop.centerpiece-splash {
+  background-color: #667c3f;
 }
 
 @keyframes shadow-pulse

@@ -37,7 +37,8 @@ class App extends React.Component {
       matchStyle: false,  // matchSplash
       missStyle: false,  // missSplash
       pressed: [],
-      showCalledNoteSplashes: true,  // for "training wheels"
+      centerpieceSplash: false,
+      showCalledNoteSplashes: false,  // for "training wheels"
       calledNoteSplash: false,
       // showTutorialModal: false,
 
@@ -102,7 +103,7 @@ class App extends React.Component {
   render() {
     const {
       appStarted, sameCallLimit, levelTracking, currentScale,
-      matchStyle, missStyle, showCalledNoteSplashes
+      matchStyle, missStyle, centerpieceSplash, showCalledNoteSplashes
     } = this.state
     // console.log('matchStyle', matchStyle, 'missStyle', missStyle)
     // console.log('currentScaleMatchCounts', this.currentScaleMatchCounts)
@@ -134,7 +135,7 @@ class App extends React.Component {
             Match: {this.currentMatchCount.match}
           </div>
           <div
-              className="start-stop"
+              className={centerpieceSplash ? 'start-stop centerpiece-splash' : 'start-stop'}
               onClick={this.startStop} >
             <h2>{ appStarted ? 'Stop' : 'Start' }</h2>
           </div>
@@ -253,12 +254,15 @@ class App extends React.Component {
         callCount: callCount+1,
         acceptMatchesUpdate: true,
         noteCalledTime: Date.now(),
+        centerpieceSplash: true,
         calledNoteSplash: showCalledNoteSplashes,
         callerTimeout: setTimeout(this.sendCall, noteCallWait)
       }, () => {
         // console.log('timeout', this.state.callerTimeout)
         this.caller.triggerAttackRelease(callNote, '8n')
-        setTimeout(() => { this.setState({ calledNoteSplash: false }) }, 300)
+        setTimeout(() => {
+          this.setState({ centerpieceSplash: false, calledNoteSplash: false })
+        }, 300)
       })
     }
   }

@@ -1,7 +1,23 @@
-todo
-    compare timeouts with Seo's debounce
+TODO
+    Render chromatic
+
+
+
+
+? miss when note goes by with no response?
+- spinning countdown timer to each next note...
+- use a "ramp" (Tetris Effect) a round of 5 stages
+    it's harder for up 5 rounds, then next stage is more complex but easier
+- penalty for slower, bonus for faster...
+    so you feel like you're getting better faster as you do...
+        as you get a little bit better, you feel like you're getting a lot better
+
+- consider tempo minimums to level,
+    accelerate tempo minimums in a ramp style before level
+
 
 todo goal for weekend: playable thing
+    same call limit 2 breaks level 1.
     trim C3 D3 to C, D
     compose some drone pitches in Ableton!
     look over those variable names, yipe. need to refactor before going any further.
@@ -44,6 +60,7 @@ REDUCE FILE SIZE
 DEV QUESTIONS
     store progress data with scale data?
     arrow vs non-arrow methods
+    compare timeouts with Seo's debounce
 
 
 
